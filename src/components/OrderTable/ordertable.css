@@ -1,0 +1,25 @@
+.removeButton{
+    margin-top: 32px!important;
+}
+.errorMessage{
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #e55353;
+}
+.imagePreview{
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+}
+.main-title{
+margin-left: 6px;
+}
+
+.logosaidbar{
+width: 32px !important;
+margin-left: 10px;
+}
+.logosaidbar-text{
+margin-top: 11px;
+}

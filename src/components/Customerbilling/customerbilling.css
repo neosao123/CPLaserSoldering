@@ -1,0 +1,18 @@
+.tableTopSpace{
+    margin-top: 10px;
+}
+
+.buttonsOrderPage{
+    width: 32px;
+}
+.button-customerorder{
+    overflow: initial;
+    text-overflow: initial;
+    display: flex;
+    white-space: initial;
+}
+.order-table-img{
+    height: 50px;
+     width: 50px;
+     margin: 10px;
+}

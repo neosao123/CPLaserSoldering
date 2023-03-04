@@ -1,0 +1,16 @@
+.logincontainer{
+    height: 100vh;
+    padding-top: 142px;
+}
+
+.login-card{
+    margin-left: 32px;
+    margin-right: 32px;
+    box-shadow: #c2abab 2px 3px 9px 1px !important;
+    position: relative;
+    
+}
+
+.login-button{
+    width: 100%;
+}
