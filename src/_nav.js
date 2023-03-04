@@ -44,13 +44,13 @@ const _nav = [
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
 
   },
-  {
-    component: CNavItem,
-    name: 'Outstanding',
-    to: '/totaloutstanding',
-    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
+  // {
+  //   component: CNavItem,
+  //   name: 'Outstanding',
+  //   to: '/totaloutstanding',
+  //   icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
 
-  },
+  // },
   // {
   //   component: CNavItem,
   //   name: 'Billhistory',
