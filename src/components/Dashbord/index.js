@@ -32,6 +32,7 @@ import { useSelector } from "react-redux";
 import { customerApi, customerListApi } from "../Helper/customer"
 import swal from "sweetalert";
 import { dashbordPreviewBillsApi } from "../Helper/dashbord"
+import { OrderSendSms } from "../Helper/order";
 
 export default function Dashboard() {
   const [customers, setcustomers] = useState();
@@ -48,67 +49,27 @@ export default function Dashboard() {
   const [customerList, setCustomerList] = useState()
   const [totalRows, setTotalRows] = useState();
   const [customerTotalRecords, setCustomerTotalRecord] = useState();
+  const [unpaidBill, setUnpaidBill] = useState();
   const userData = useSelector((state) => state.userData);
-
-  const items = [
-    {
-      id: 1,
-      customerName: "Mark",
-      ContactNumber: "9856421786",
-      OrderDate: "27-2-2023",
-      OrderNo: "9868",
-    },
-    {
-      id: 2,
-      customerName: "Jacob",
-      ContactNumber: "9654217895",
-      OrderDate: "22-2-2023",
-      OrderNo: "9798",
-    },
-    {
-      id: 3,
-      customerName: "Larry the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-    {
-      id: 4,
-      customerName: "arry the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-    {
-      id: 5,
-      customerName: "lorry the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-    {
-      id: 6,
-      customerName: "norw the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-    {
-      id: 7,
-      customerName: "man the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-    {
-      id: 8,
-      customerName: "up the Bird",
-      ContactNumber: "9885476547",
-      OrderDate: "20-2-2023",
-      OrderNo: "9898",
-    },
-  ];
-
+  let userId = userData.userinfo.userId;
+  const handleSMSFlag = async (orderId) => {
+    console.log(orderId)
+    let payloadData = {
+      userId: userId,
+      orderId: orderId,
+    }
+    await OrderSendSms(payloadData).then((res) => {
+      if (res.status === 200) {
+        swal("Success", res.message, "success").then((ok) => {
+          if (ok) {
+            window.location.reload()
+          }
+        })
+      } else {
+        swal("Warning", res.message, "warning")
+      }
+    })
+  }
   const columns = [
     {
       name: " No",
@@ -143,9 +104,22 @@ export default function Dashboard() {
       </>)
     },
     {
-      name: "Action",
+      name: "Actions",
       allowOverflow: true,
       selector: (row) => (<>
+        {
+          row.smsSendFlag === "0" ? (<>
+            <CButton
+              color="primary"
+              variant="outline"
+              className="px-0 buttonsOrderPage "
+              onClick={(e) => handleSMSFlag(row.orderId)}
+            >
+              <i class="fa fa-comment" aria-hidden="true"></i>
+            </CButton>
+          </>) : (<></>)
+        }&nbsp;&nbsp;
+
         <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
           <CIcon icon={cilInfo} size="lg" />
         </CButton>
@@ -161,35 +135,18 @@ export default function Dashboard() {
     dashbordPreview()
   }, []);
 
-  // const getcustomer = async (page) => {
-  //   if (userData.userinfo.userId) {
-  //     setListLoading(true)
-  //     await customerListApi(userData.userinfo.userId, page ? page : 0)
-  //       .then(
-  //         async (res) => {
-  //           // console.log(" success");
-  //           setCustomerList(res.data);
-  //           setListLoading(false)
-  //           setCustomerTotalRecord(res.totalRecords);
-  //         },
-  //         (err) => {
-  //           setListLoading(false)
 
-  //         }
-  //       )
-  //       .catch();
-  //   }
-  // }
 
   const Dashboardcard = () => {
     dashbordApi(userData.userinfo.userId)
       .then(
         async (res) => {
           // console.log(" success");
-          // console.log("res", res);
+          console.log("res", res);
           setcustomers(res.data.customers);
           setorders(res.data.orders);
           settodaysOrders(res.data.todaysOrders);
+          setUnpaidBill(res.data.customerWithoutBill)
         },
         (err) => {
           // console.log("error");
@@ -263,7 +220,7 @@ export default function Dashboard() {
   };
 
   // Dashbord Table Api 
-  let userId = userData.userinfo.userId;
+
 
   const dashbordPreview = () => {
     setListLoading(true)
@@ -385,7 +342,7 @@ export default function Dashboard() {
                   <strong className="">Unpaid Bills</strong>
                   <div className="d-flex justify-content-between">
                     <p className="mt-1">
-                      <h5>{todaysOrders}</h5>
+                      <h5>{unpaidBill}</h5>
                     </p>
                     <Link to="/totaloutstanding">
                       <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">

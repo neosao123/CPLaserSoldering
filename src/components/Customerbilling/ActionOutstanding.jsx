@@ -15,6 +15,10 @@ const ActionOutstanding = () => {
     const [billData, setBillData] = useState();
     const [billDate, setBillDate] = useState();
     const [note, setNote] = useState();
+
+    const [amountErr, setAmountErr] = useState()
+    const [billDateErr, setDateErr] = useState()
+    const [paymentModeErr, setPaymentModeErr] = useState()
     let { state } = useLocation();
     let orderId = state?.orderId;
     let customerId = state?.customerId;
@@ -42,7 +46,6 @@ const ActionOutstanding = () => {
         })
     }
 
-
     const handleAddBill = (e) => {
         e.preventDefault();
         let validate = true;
@@ -53,30 +56,36 @@ const ActionOutstanding = () => {
             amount: amount,
             billDate: billDate,
             paymentMode: payMode ?? "G pay",
+            note: note ?? "",
         }
         console.log(payLoadData);
 
-        // if (payLoadData.amount === undefined) {
-        //     setAmountErr("Please enter amount");
-        //     validate = false;
-        // }
-        // if(payLoadData.billDate === undefined){
-        //     setDateErr("Please select date")
-        // }
-
-        BillAdd(payLoadData).then((res) => {
-            console.log(res)
-            if (res.status === 200) {
-                swal("Success", res.message, "success").then((ok) => {
-                    if (ok) {
-                        window.location.reload()
-                    }
-                })
-            } else {
-                swal("Warning", res.message, "warning")
-            }
-
-        })
+        if (payLoadData.amount === undefined) {
+            validate = false;
+            setAmountErr("Please enter amount");
+        }
+        if (payLoadData.billDate === undefined) {
+            validate = false;
+            setDateErr("Please select date");
+        }
+        if (payLoadData.paymentMode === undefined) {
+            validate = false;
+            setPaymentModeErr("Please select payment mode")
+        }
+        if (validate) {
+            BillAdd(payLoadData).then((res) => {
+                console.log(res)
+                if (res.status === 200) {
+                    swal("Success", res.message, "success").then((ok) => {
+                        if (ok) {
+                            window.location.reload()
+                        }
+                    })
+                } else {
+                    swal("Warning", res.message, "warning")
+                }
+            })
+        }
     }
 
 
@@ -88,15 +97,29 @@ const ActionOutstanding = () => {
             orderId: orderId,
             userId: userId
         }
-        BillDelete(payLoadData).then((res) => {
-            if (res.status === 200) {
-                swal("Success", res.message, "success").then((ok) => {
-                    if (ok) {
-                        window.location.reload()
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete?",
+            icon: "warning",
+            dangerMode: true,
+            buttons: ["Cancel", "Ok"],
+        }).then((willDelete) => {
+            if (willDelete) {
+                BillDelete(payLoadData).then((res) => {
+                    if (res.status === 200) {
+                        swal("Success", res.message, "success").then((ok) => {
+                            if (ok) {
+                                window.location.reload()
+                            }
+                        })
+                    } else {
+                        swal("Warning", res.message, "warning")
                     }
                 })
+
             }
-        })
+        });
+
     }
 
     const columns = [
@@ -142,7 +165,7 @@ const ActionOutstanding = () => {
             <CContainer fluid>
                 <CRow>
                     <CCol xs={12}>
-                        <h5 className="main-title"> Outstanding </h5>
+                        <h5 className="main-title"> View Last Bills </h5>
                     </CCol>
                     <CCol xs={8}>
                         <CBreadcrumb
@@ -156,7 +179,7 @@ const ActionOutstanding = () => {
                             <CBreadcrumbItem >
                                 <Link to="/customerbilling">Customer Order</Link>
                             </CBreadcrumbItem>
-                            <CBreadcrumbItem actives>Outstanding</CBreadcrumbItem>
+                            <CBreadcrumbItem actives>Last Bill</CBreadcrumbItem>
                         </CBreadcrumb>
                     </CCol>
                 </CRow>
@@ -168,19 +191,19 @@ const ActionOutstanding = () => {
                         <CCardBody>
                             <CRow className="justify-content-start">
                                 <CCol md={4} sm={12}>
-                                    Customer Name :  {billData?.customerName}
+                                    <b>Customer Name</b>  :  {billData?.customerName}
                                 </CCol>
                                 <CCol md={4} sm={12}>
-                                    Customer Phone :  {billData?.customerPhone}
+                                    <b>Customer Phone</b>  :  {billData?.customerPhone}
                                 </CCol>
                                 <CCol md={4} sm={12}>
-                                    Balance :  {billData?.remainingAmount}
+                                    <b>Balance</b>  :  {billData?.remainingAmount}
                                 </CCol>
                                 <CCol md={4} sm={12} >
-                                    Total Charges :  {billData?.totalCharges}
+                                    <b>Total Charges</b>  :  {billData?.totalCharges}
                                 </CCol>
                                 <CCol md={4} sm={12}>
-                                    Total Paid :  {billData?.totalPaid}
+                                    <b>Total Paid</b>  :  {billData?.totalPaid}
                                 </CCol>
                             </CRow>
                         </CCardBody>
@@ -214,17 +237,17 @@ const ActionOutstanding = () => {
                                     <CFormInput
                                         type="date"
                                         value={billDate}
-                                        onChange={(e) => setBillDate(e.target.value)}
+                                        onChange={(e) => { setBillDate(e.target.value); setDateErr("") }}
                                         placeholder="Order Date"
                                     />
                                     {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
-
+                                    <span className='text-danger'>{billDateErr}</span>
                                 </div>
                                 <div className="mt-3">
                                     <lable> Amount </lable><br />
 
-                                    <input type="text" onChange={(e) => setAmount(e.target.value)} placeholder="Enter amount" value={amount} className="form-control" />
-
+                                    <input type="text" onChange={(e) => { setAmount(e.target.value); setAmountErr("") }} placeholder="Enter amount" value={amount} className="form-control" />
+                                    <span className='text-danger'>{amountErr}</span>
                                 </div>
                                 <div className="mt-3">
                                     <lable> Payment Mode </lable><br />
@@ -238,7 +261,7 @@ const ActionOutstanding = () => {
                                         <option value="net banking">Net Banking</option>
                                         <option value="cheque">Cheque</option>
                                     </select>
-
+                                    <span className='text-danger'>{paymentModeErr} </span>
 
                                 </div>
                                 <div className="mt-3">
