@@ -26,7 +26,7 @@ import {
 import CIcon from "@coreui/icons-react";
 import { cilInfo } from "@coreui/icons";
 import DataTable, { FilterComponent } from "react-data-table-component";
-import { OutstandingList } from "../Helper/outstanding";
+import { outstandingHistory, OutstandingList } from "../Helper/outstanding";
 import { useSelector } from "react-redux";
 import Select, { components } from "react-select";
 import { Routes, Route, useParams } from "react-router-dom";
@@ -46,54 +46,40 @@ export default function TotalOutstanding() {
     const [listLoading, setListLoading] = useState();
     const [selectedCustomer, setSelectedCustomer] = useState("");
     let { customerIdd } = useParams();
+    let UserId = userData.userinfo.userId
+
 
     const columns = [
         {
-            name: "Customer Id No",
-            selector: (row) => row.customerId,
+            name: "Sr. No.",
+            selector: (row, index) => index + 1,
         },
         {
-            name: "Customer Name",
-            selector: (row) => row.customerName,
+            name: "Amount Paid",
+            selector: (row) => row.amountPaid,
         },
         {
-            name: "Customer Phone",
-            selector: (row) => row.customerPhone,
+            name: "Bill Date",
+            selector: (row) => row.billDate,
         },
-
-        // {
-        //   name: "Total Outstanding",
-        //   selector: (row) => row.totalOutStanding,
-        // },
-        // {
-        //   name: "Total Paid",
-        //   selector: (row) => row.totalPaid,
-        // },
-        // {
-        //   name: "Balance",
-        //   selector: (row) => row.remainingAmount,
-        // },
         {
-            name: "Type",
-            selector: (row) => row.type,
+            name: "Payment Mode",
+            selector: (row) => row.paymentMode,
         },
     ];
-
-    let userId = userData.userinfo.userId;
-
     function handlePerRowsChange(page) {
-        console.log("cur", page);
         if (page === undefined) {
             page = 0;
         }
         var ofs = (page - 1) * perPage;
-        console.log("Per Row ", ofs);
-        OutstandingList(userId, ofs, customerIdd, "").then(
+        outstandingHistory(customerIdd, ofs, UserId).then(
             (res) => {
-                setData(res?.data);
-                setData(res.data);
-                setTotalRows(res.totalRecords);
-                console.log(res);
+                if (res.status === 200) {
+                    setData(res?.data.billPaidList);
+                    setTotalRows(res.totalBills);
+                    setSelectedCustomer(res.data);
+                    setListLoading(false);
+                }
             },
             (err) => {
                 console.log(err);
@@ -104,13 +90,14 @@ export default function TotalOutstanding() {
     function handlePageChange(page) {
         setListLoading(true);
         var offset = (page - 1) * perPage;
-        OutstandingList(userId, offset < 0 ? 0 : offset, customerIdd, "").then(
+        outstandingHistory(customerIdd, offset, UserId).then(
             (res) => {
                 if (res.status === 200) {
                     console.log(res);
-                    setData(res.data);
-                    setTotalRows(res.totalRecords);
+                    setData(res.data.billPaidList);
+                    setTotalRows(res.totalBills);
                     setListLoading(false);
+                    setSelectedCustomer(res.data);
                 }
             },
             (err) => {
@@ -122,7 +109,7 @@ export default function TotalOutstanding() {
 
     useEffect(() => {
         handlePageChange(0);
-        getCutomerlist();
+        handlePerRowsChange(0)
     }, []);
 
     const paginationComponentOptions = {
@@ -130,34 +117,7 @@ export default function TotalOutstanding() {
         noRowsPerPage: true,
     };
 
-    const getCutomerlist = () => {
-        let outstandingId = customerIdd;
-        fetchCustomerListApi(userId, outstandingId).then((res) => {
-            var result = res?.data;
-            var customerLive = [];
-            result.forEach((element) => {
-                customerLive.push({
-                    value: element.customerId,
-                    label: element.customerName,
-                });
-            });
-            setCustomerList(customerLive);
-        });
-    };
 
-    const handleCustomer = (e) => {
-        setSelectedCustomer(e.value);
-    };
-    var paidOption = "paid";
-    const handlePayment = (e) => {
-        paidOption = e.target.value;
-        console.log(paidOption);
-    };
-
-    const handleClear = (e) => {
-        e.preventDefault();
-        window.location.reload();
-    };
 
     return (
         <div>
@@ -191,25 +151,21 @@ export default function TotalOutstanding() {
                         </CCardHeader>
 
                         <CRow className="justify-content-start m-3">
+
                             <CCol md={4} sm={12}>
-                                {/* Customer Name :  {billData?.customerName} */}
-                                Customer Name :
+                                <b>Customer Name</b>  :  {selectedCustomer?.customerName}
                             </CCol>
                             <CCol md={4} sm={12}>
-                                {/* Customer Phone :  {billData?.customerPhone} */}
-                                Customer Phone :
+                                <b>Customer Phone</b>  :  {selectedCustomer?.customerPhone}
                             </CCol>
                             <CCol md={4} sm={12}>
-                                {/* Balance :  {billData?.remainingAmount} */}
-                                Type :
+                                <b>Balance</b>  :  {selectedCustomer?.remainingAmount}
                             </CCol>
                             <CCol md={4} sm={12} >
-                                {/* Total Charges :  {billData?.totalCharges} */}
-                                Bill Amount :
+                                <b>Total Charges</b>  :  {selectedCustomer?.totalCharges}
                             </CCol>
                             <CCol md={4} sm={12}>
-                                {/* Total Paid :  {billData?.totalPaid} */}
-                                Total Paid :
+                                <b>Total Paid</b>  :  {selectedCustomer?.paid}
                             </CCol>
                         </CRow>
                         <CCardBody>
@@ -289,8 +245,8 @@ export default function TotalOutstanding() {
                                 columns={columns}
                                 data={data}
                                 highlightOnHover
-                                // pagination
-                                // paginationServer
+                                pagination
+                                paginationServer
                                 progressPending={listLoading}
                                 paginationRowsPerPageOptions={[]}
                                 paginationComponentOptions={paginationComponentOptions}

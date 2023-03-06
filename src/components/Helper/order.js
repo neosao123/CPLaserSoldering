@@ -52,3 +52,7 @@ export const OrderUpdate = async (payloadData) => {
   let res = await axiosPrivate.post("/order/update", payloadData);
   return res.data;
 }
+export const deleteOrderItem = async (orderItemId) => {
+  let res = await axiosPrivate.post("/order/delete/item", orderItemId);
+  return res.data;
+}

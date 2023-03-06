@@ -32,7 +32,7 @@ import {
 import CIcon from "@coreui/icons-react";
 import { cilTrash, cilPlus } from "@coreui/icons";
 import "./ordertable.css";
-import { createOrderApi, fetchCustomerListApi, OrderUpdate } from "../Helper/order";
+import { createOrderApi, deleteOrderItem, fetchCustomerListApi, OrderUpdate } from "../Helper/order";
 import { useSelector } from "react-redux";
 import { customerApi } from "../Helper/customer";
 import { Routes, Route, useParams } from "react-router-dom";
@@ -172,7 +172,15 @@ function OrderTable() {
           formData.append("orderDate", Date);
           formData.append("orderId", Id)
           await OrderUpdate(formData).then((res) => {
-            console.log(res)
+            if (res.status === 200) {
+              swal("Success", res.message, "success").then((ok) => {
+                if (ok) {
+                  navigate("/customerbilling");
+                }
+              });
+            } else {
+              swal("Error", res.message, "warning");
+            }
           })
           setLoading(false);
           setImageError(false);
@@ -224,15 +232,34 @@ function OrderTable() {
       type: "",
       orderItemId: "-"
     };
-
     setFormFields([...formFields, object]);
   };
 
-  const removeFields = (index, charges) => {
-    let data = [...formFields];
-    data.splice(index, 1);
-    setFormFields([...data]);
-    setchargestotal(chargestotal - charges);
+  const removeFields = (index, charges, orderItemId) => {
+
+    if (orderItemId) {
+      swal({
+        title: "Are you sure?",
+        text: "Are you sure that you want to delete?",
+        icon: "warning",
+        dangerMode: true,
+        buttons: ["Cancel", "Ok"],
+      }).then((willDelete) => {
+        if (willDelete) {
+          let data = [...formFields];
+          data.splice(index, 1);
+          setFormFields([...data]);
+          setchargestotal(chargestotal - charges);
+          deleteOrderItem({ orderItemId: orderItemId }).then((res) => {
+            if (res.status === 200) {
+              swal("Success", res.message, "success")
+            } else {
+              swal("Warning", res.message, "warning")
+            }
+          })
+        }
+      });
+    }
   };
   const handleFileChangeImage = (e) => {
     if (e.target.files) {
@@ -611,7 +638,7 @@ function OrderTable() {
                             color="primary"
                             disabled={formFields.length === 1 ? true : false}
                             onClick={() => {
-                              removeFields(index, form.charges);
+                              removeFields(index, form.charges, form.orderItemId);
                             }}
                             className="removeButton"
                           >

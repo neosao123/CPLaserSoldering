@@ -55,7 +55,7 @@ const ActionOutstanding = () => {
             orderId: orderId,
             amount: amount,
             billDate: billDate,
-            paymentMode: payMode ?? "G pay",
+            paymentMode: payMode,
             note: note ?? "",
         }
         console.log(payLoadData);
@@ -68,7 +68,7 @@ const ActionOutstanding = () => {
             validate = false;
             setDateErr("Please select date");
         }
-        if (payLoadData.paymentMode === undefined) {
+        if (payLoadData.paymentMode === undefined || payLoadData.paymentMode === "") {
             validate = false;
             setPaymentModeErr("Please select payment mode")
         }
@@ -209,95 +209,128 @@ const ActionOutstanding = () => {
                         </CCardBody>
                     </CCard>
                 </CRow>
-                <CRow className="mt-3">
-                    <CCol md={6} sm={12}>
-                        <CCard>
-                            <CCardHeader >
-                                <strong>Add Bill </strong>
-                            </CCardHeader>
-                            <form className='form p-4'>
-                                {/* <div className="mt-3">
+                {
+                    !billData?.remainingAmount <= 0 ? (<>
+                        <CRow className="mt-3">
+                            <CCol md={6} sm={12}>
+                                <CCard>
+                                    <CCardHeader >
+                                        <strong>Add Bill </strong>
+                                    </CCardHeader>
+                                    <form className='form p-4'>
+                                        {/* <div className="mt-3">
                                     <lable> Customer Name </lable><br />
                                     <input type="text" readOnly value={customerName} className="form-control" />
                                 </div> */}
-                                <div className="mt-3">
-                                    <lable> Unpaid Bill Amount </lable><br />
-                                    <input
-                                        type="text"
-                                        value={billData?.remainingAmount}
-                                        readOnly
-                                        placeholder="Remaining Amount"
-                                        className='form-control'
-                                    />
-                                    {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
+                                        <div className="mt-3">
+                                            <lable> Unpaid Bill Amount </lable><br />
+                                            <input
+                                                type="text"
+                                                value={billData?.remainingAmount}
+                                                readOnly
+                                                placeholder="Remaining Amount"
+                                                className='form-control'
+                                            />
+                                            {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
 
-                                </div>
-                                <div className="mt-3">
-                                    <lable> Bill Date </lable><br />
-                                    <CFormInput
-                                        type="date"
-                                        value={billDate}
-                                        onChange={(e) => { setBillDate(e.target.value); setDateErr("") }}
-                                        placeholder="Order Date"
-                                    />
-                                    {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
-                                    <span className='text-danger'>{billDateErr}</span>
-                                </div>
-                                <div className="mt-3">
-                                    <lable> Amount </lable><br />
+                                        </div>
+                                        <div className="mt-3">
+                                            <lable> Bill Date </lable><br />
+                                            <CFormInput
+                                                type="date"
+                                                value={billDate}
+                                                onChange={(e) => { setBillDate(e.target.value); setDateErr("") }}
+                                                placeholder="Order Date"
+                                            />
+                                            {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
+                                            <span className='text-danger'>{billDateErr}</span>
+                                        </div>
+                                        <div className="mt-3">
+                                            <lable> Amount </lable><br />
 
-                                    <input type="text" onChange={(e) => { setAmount(e.target.value); setAmountErr("") }} placeholder="Enter amount" value={amount} className="form-control" />
-                                    <span className='text-danger'>{amountErr}</span>
-                                </div>
-                                <div className="mt-3">
-                                    <lable> Payment Mode </lable><br />
-                                    <select name="" id="" className='form-select' onChange={(e) => {
-                                        setPayMode(e.target.value);
-                                        console.log(e.target.value)
-                                    }}>net, card, upi, cash
-                                        <option value="Cash">Cash</option>
-                                        <option value="Card">Card</option>
-                                        <option value="UPI">UPI</option>
-                                        <option value="net banking">Net Banking</option>
-                                        <option value="cheque">Cheque</option>
-                                    </select>
-                                    <span className='text-danger'>{paymentModeErr} </span>
+                                            <input type="text" onChange={(e) => { setAmount(e.target.value); setAmountErr("") }} placeholder="Enter amount" value={amount} className="form-control" />
+                                            <span className='text-danger'>{amountErr}</span>
+                                        </div>
+                                        <div className="mt-3">
+                                            <lable> Payment Mode </lable><br />
+                                            <select name="" id="" className='form-select' onChange={(e) => {
+                                                setPayMode(e.target.value);
+                                                setPaymentModeErr("")
+                                            }}>
+                                                <option value="">Select method</option>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Card">Card</option>
+                                                <option value="UPI">UPI</option>
+                                                <option value="net banking">Net Banking</option>
+                                                <option value="cheque">Cheque</option>
+                                            </select>
+                                            <span className='text-danger'>{paymentModeErr} </span>
 
-                                </div>
-                                <div className="mt-3">
-                                    <lable> Note </lable><br />
-                                    <textarea name="" id="" cols="30" rows="3" className='form-control' onChange={(e) => setNote(e.target.value)}></textarea>
-                                </div>
-                                <div className="mt-3">
-                                    <button className='btn btn-primary' onClick={handleAddBill}>
-                                        Add Bill
-                                    </button>
-                                </div>
-                            </form>
-                        </CCard>
-                    </CCol>
-                    <CCol md={6} sm={12}>
-                        <CCard>
-                            <CCardHeader >
-                                <strong>Bill History </strong>
-                            </CCardHeader>
-                            <CCard>
-                                <CCardBody>
-                                    <DataTable
-                                        className="tableTopSpace  border border-table"
-                                        columns={columns}
-                                        responsive={true}
-                                        data={billData?.billPaidList}
-                                        pagination
-                                        paginationComponentOptions={paginationComponentOptions}
-                                        paginationServer
-                                    />
-                                </CCardBody>
-                            </CCard>
+                                        </div>
+                                        <div className="mt-3">
+                                            <lable> Note </lable><br />
+                                            <textarea name="" id="" cols="30" rows="3" className='form-control' onChange={(e) => setNote(e.target.value)}></textarea>
+                                        </div>
+                                        <div className="mt-3">
+                                            <button className='btn btn-primary' onClick={handleAddBill}>
+                                                Add Bill
+                                            </button>
+                                        </div>
+                                    </form>
+                                </CCard>
+                            </CCol>
+                            <CCol md={6} sm={12}>
+                                <CCard>
+                                    <CCardHeader >
+                                        <strong>Bill History </strong>
+                                    </CCardHeader>
+                                    <CCard>
+                                        <CCardBody>
+                                            <DataTable
+                                                className="tableTopSpace  border border-table"
+                                                columns={columns}
+                                                responsive={true}
+                                                data={billData?.billPaidList}
+                                                pagination
+                                                paginationComponentOptions={paginationComponentOptions}
+                                                paginationServer
+                                            />
+                                        </CCardBody>
+                                    </CCard>
 
-                        </CCard>
-                    </CCol>
-                </CRow>
+                                </CCard>
+                            </CCol>
+                        </CRow>
+                    </>) : (<>
+                        <CRow>
+                            <CCol md={12} sm={12} className="mt-3">
+                                <CCard>
+                                    <CCardHeader >
+                                        <strong>Bill History </strong>
+                                    </CCardHeader>
+                                    <CCard>
+                                        <CCardBody>
+                                            <DataTable
+                                                className="tableTopSpace  border border-table"
+                                                columns={columns}
+                                                responsive={true}
+                                                data={billData?.billPaidList}
+                                                pagination
+                                                paginationComponentOptions={paginationComponentOptions}
+                                                paginationServer
+                                            />
+                                        </CCardBody>
+                                    </CCard>
+
+                                </CCard>
+                            </CCol>
+
+                        </CRow>
+                    </>)
+
+                }
+
+
             </CContainer>
 
 

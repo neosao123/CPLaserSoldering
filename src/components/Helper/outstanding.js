@@ -16,7 +16,11 @@ export const BillDelete = async (payloadData) => {
     let res = await axiosPrivate.post("/customer/bill/delete", payloadData);
     return res.data;
 }
-export const BillView = async (payloadData)=>{
-    let res = await axiosPrivate.post("/customer/bill/view",payloadData);
+export const BillView = async (payloadData) => {
+    let res = await axiosPrivate.post("/customer/bill/view", payloadData);
+    return res.data;
+}
+export const outstandingHistory = async (customerId, offset, userId) => {
+    let res = await axiosPrivate.get(`https://neotesting.online/cplasersoldering/testing/api/customer/outstanding/history?customerId=${customerId}&offset=${offset}&userId=${userId}`);
     return res.data;
 }

@@ -31,7 +31,7 @@ import {
   CModalFooter,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { cilTrash, cilPlus,cilInfo } from "@coreui/icons";
+import { cilTrash, cilPlus, cilInfo } from "@coreui/icons";
 import { createOrderApi, fetchCustomerListApi } from "../Helper/order";
 import { useSelector } from "react-redux";
 import { customerApi } from "../Helper/customer";
@@ -380,7 +380,7 @@ function View() {
                           options={customerlist}
                           isDisabled={true}
                           className="text-start"
-                        
+
                           placeholder={
                             <div className="select-placeholder-text">
                               Select options
@@ -547,8 +547,8 @@ function View() {
                         type="button"
                         disabled
                       > */}
-                        {/* Add More. */}
-                        {/* <CIcon icon={cilPlus} className="text-white " />
+                      {/* Add More. */}
+                      {/* <CIcon icon={cilPlus} className="text-white " />
                       </CButton> */}
                     </CCol>
                     {/* <CCol md={4} sm={5} className=''>
@@ -610,7 +610,7 @@ function View() {
                       /> */}
 
                       {/* <img src={OrderPhoto} /> */}
-{/* 
+                      {/* 
                       {imageError === true ? (
                         <>
                           <CFormFeedback className="errorMessage">
