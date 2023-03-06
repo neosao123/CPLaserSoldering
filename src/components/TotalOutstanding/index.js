@@ -25,6 +25,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import {
+  cilFolderOpen,
   cilInfo
 } from '@coreui/icons'
 import "./TotalOutstanding.css"
@@ -150,8 +151,8 @@ export default function TotalOutstanding() {
       name: 'View',
       selector: row => (<>
         <Link to={"/outstandingViewList/" + row.customerId}>
-          <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-            <CIcon icon={cilInfo} size="lg" />
+          <CButton color="secondary" title='View Outstanding' variant="outline" className="px-0 buttonsOrderPage ">
+            <CIcon icon={cilFolderOpen} size="lg" />
           </CButton>
         </Link>
       </>),
@@ -310,23 +311,23 @@ export default function TotalOutstanding() {
                     <option value="partial paid">Partially Paid</option>
                   </select>
                 </CCol>
-               <br/>
+                <br />
                 <CCol md={12}>
                   <div className='text-center mt-2'>
-                  <CButton
-                    color="success"
-                    className="mt-1 "
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </CButton>
-                  <CButton
-                    color="danger"
-                    className="mt-1 ms-2"
-                    onClick={handleClear}
-                  >
-                    Clear
-                  </CButton>
+                    <CButton
+                      color="success"
+                      className="m-2 text-white"
+                      onClick={handleSearch}
+                    >
+                      Search
+                    </CButton>
+                    <CButton
+                      color="dark"
+                      className="text-white"
+                      onClick={handleClear}
+                    >
+                      Clear
+                    </CButton>
                   </div>
                 </CCol>
 

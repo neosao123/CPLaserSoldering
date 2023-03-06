@@ -31,7 +31,7 @@ import {
 import "./customerbilling.css";
 import DataTable, { FilterComponent } from "react-data-table-component";
 import CIcon from "@coreui/icons-react";
-import { cilInfo, cilPencil, cilTrash } from "@coreui/icons";
+import { cilFolderOpen, cilInfo, cilLibraryAdd, cilPencil, cilTrash } from "@coreui/icons";
 import {
   fetchCustomerListApi,
   orderListApi,
@@ -294,13 +294,13 @@ export default function Customerbilling() {
         return (
           <div className="button-customerorder">
             <CButton
-              color="primary"
+              color="success"
               variant="outline"
-              className="buttonsOrderPage px-0"
+              title="Add Outstanding"
+              className="ms-2 buttonsOrderPage w-100 "
               onClick={() => navigate('/customerbilling/actionoutstanding', { state: { orderId: row.orderId, orderDate: row.orderDate, customerId: row.customerId, customerName: row.customerName } })}
-            // onClick={() => handleCustomerOutstanding(row.orderId, row.orderDate, row.customerId)}
             >
-              <i class="fa fa-history" aria-hidden="true"></i>
+            <CIcon icon={cilLibraryAdd} size="lg" />
             </CButton>
           </div>)
       },
@@ -327,7 +327,8 @@ export default function Customerbilling() {
             &nbsp;{row.orderPhoto === "No Image" ? (
               <>
                 <CButton
-                  color="primary"
+                  color="warning"
+                  title="Upload Order Photo"
                   variant="outline"
                   className="px-0 buttonsOrderPage "
                   onClick={(e) => handleModal(row.orderId)}
@@ -342,6 +343,7 @@ export default function Customerbilling() {
               row.smsSendFlag === "0" ? (<>
                 <CButton
                   color="primary"
+                  title="Send Sms"
                   variant="outline"
                   className="px-0 buttonsOrderPage "
                   onClick={(e) => handleSMSFlag(row.orderId)}
@@ -355,17 +357,19 @@ export default function Customerbilling() {
             &nbsp;&nbsp;
             <Link to={"/view/" + row.orderId}>
               <CButton
-                color="primary"
+                color="secondary"
+                title="View Order"
                 variant="outline"
                 className="px-0 buttonsOrderPage "
               >
-                <CIcon icon={cilInfo} size="lg" />
+                <CIcon icon={cilFolderOpen} size="lg" />
               </CButton>
             </Link>
             &nbsp;&nbsp;
             <Link to={"/order/" + row.orderId}>
               <CButton
-                color="primary"
+                color="dark"
+                title="Edit Order"
                 variant="outline"
                 className="px-0 buttonsOrderPage "
               >
@@ -374,7 +378,8 @@ export default function Customerbilling() {
             </Link>
             &nbsp;&nbsp;
             <CButton
-              color="primary"
+              color="danger"
+              title="Delete Order "
               // onClick={()=>getorderDataForEdit(row.customerId)}
               variant="outline"
               onClick={() => deleteorder(row.orderId)}

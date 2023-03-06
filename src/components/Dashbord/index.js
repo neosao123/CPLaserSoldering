@@ -24,7 +24,7 @@ import {
 } from "@coreui/react";
 import { dashbordApi } from "../Helper/dashbord";
 import CIcon from "@coreui/icons-react";
-import { cilLockLocked, cilInfo, cilPencil, cilTrash, cilChartPie } from "@coreui/icons";
+import { cilLockLocked, cilInfo, cilPencil, cilTrash, cilChartPie, cilFolderOpen } from "@coreui/icons";
 import DataTable from "react-data-table-component";
 import "./dashbord.css";
 import { Link } from "react-router-dom";
@@ -119,10 +119,11 @@ export default function Dashboard() {
             </CButton>
           </>) : (<></>)
         }&nbsp;&nbsp;
-
-        <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-          <CIcon icon={cilInfo} size="lg" />
-        </CButton>
+        <Link to={`/view/${row.orderId}`}>
+          <CButton color="secondary" title="View Outstanding" variant="outline" className="px-0 buttonsOrderPage ">
+            <CIcon icon={cilFolderOpen} size="lg" />
+          </CButton>
+        </Link>
       </>),
     },
   ];
@@ -291,8 +292,8 @@ export default function Dashboard() {
                       <h5>{customers}</h5>
                     </p>
                     <Link to="/customer">
-                      <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-                        <CIcon icon={cilInfo} size="lg" />
+                      <CButton color="secondary" title="View Customers" variant="outline" className="px-0 buttonsOrderPage ">
+                        <CIcon icon={cilFolderOpen} size="lg" />
                       </CButton>
                     </Link>
                   </div>
@@ -309,8 +310,8 @@ export default function Dashboard() {
                       <h5>{orders}</h5>
                     </p>
                     <Link to="/customerbilling">
-                      <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-                        <CIcon icon={cilInfo} size="lg" />
+                      <CButton color="secondary" title="View Orders" variant="outline" className="px-0 buttonsOrderPage ">
+                        <CIcon icon={cilFolderOpen} size="lg" />
                       </CButton>
                     </Link>
                   </div>
@@ -327,8 +328,8 @@ export default function Dashboard() {
                       <h5>{todaysOrders}</h5>
                     </p>
                     <Link to="/customerbilling">
-                      <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-                        <CIcon icon={cilInfo} size="lg" />
+                      <CButton color="secondary" title="View Today's Orders" variant="outline" className="px-0 buttonsOrderPage ">
+                        <CIcon icon={cilFolderOpen} size="lg" />
                       </CButton>
                     </Link>
                   </div>
@@ -345,8 +346,8 @@ export default function Dashboard() {
                       <h5>{unpaidBill}</h5>
                     </p>
                     <Link to="/totaloutstanding">
-                      <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage ">
-                        <CIcon icon={cilInfo} size="lg" />
+                      <CButton color="secondary" title="View Unpaid Bills" variant="outline" className="px-0 buttonsOrderPage ">
+                        <CIcon icon={cilFolderOpen} size="lg" />
                       </CButton>
                     </Link>
                   </div>
@@ -358,7 +359,7 @@ export default function Dashboard() {
             <CCol md={12} sm={12} lg={7}>
               <CCard className="mt-3">
                 <CCardHeader>
-                  <strong>Preview Bills </strong>
+                  <strong>Latest Bills </strong>
                 </CCardHeader>
                 <CCardBody>
                   <DataTable

@@ -64,10 +64,10 @@ export default function FormComponent() {
           {/* <CButton color="primary" variant="outline" className="px-0 buttonsOrderPage "> 
           <CIcon icon={cilInfo} size="lg"  />
         </CButton>&nbsp;&nbsp; */}
-          <CButton color="primary" variant="outline" onClick={() => getCustomerDataForEdit(row.customerId)} className="px-0 buttonsOrderPage ">
+          <CButton title='Edit customer' color="dark" variant="outline" onClick={() => getCustomerDataForEdit(row.customerId)} className="px-0 buttonsOrderPage ">
             <CIcon icon={cilPencil} size="lg" />
           </CButton>&nbsp;&nbsp;
-          <CButton color="primary" variant="outline" onClick={() => deleteCustomer(row.customerId)} className="px-0 buttonsOrderPage ">
+          <CButton title='Delete customer' color="danger" variant="outline" onClick={() => deleteCustomer(row.customerId)} className="px-0 buttonsOrderPage ">
             <CIcon icon={cilTrash} size="lg" />
           </CButton>&nbsp;&nbsp;
         </div>
@@ -236,7 +236,7 @@ export default function FormComponent() {
       customerId: deleteCustomerId
     };
     swal({
-      title:"Are you sure to delete Order?",
+      title: "Are you sure to delete Order?",
       // text: "Are you sure to delete Order?",
       icon: "warning",
       dangerMode: true,
@@ -346,7 +346,7 @@ export default function FormComponent() {
                   {customerPhoneError === true ? (
                     <>
                       <CFormFeedback className="errorMessage-customer">
-                      Enter 10 Digit Number.
+                        Enter 10 Digit Number.
                       </CFormFeedback>
                     </>
                   ) : null}

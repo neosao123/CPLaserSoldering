@@ -5,10 +5,10 @@ const AppFooter = () => {
   return (
     <CFooter>
       <div className='text-center w-100'>
-        <a href="https://coreui.io" target="_blank" rel="noopener noreferrer">
-        jewellery 
+        Designed and Developed by <a href="https://www.neosao.com/" target="_blank" rel="noopener noreferrer">
+          Neosao
         </a>
-        <span className="ms-1">&copy; 2023 creativeIdeas.</span>
+        <span className="ms-1">&copy; 2023.</span>
       </div>
       {/* <div className="ms-auto">
         <span className="me-1">Powered by</span>

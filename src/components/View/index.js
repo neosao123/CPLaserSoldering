@@ -337,17 +337,18 @@ function View() {
           </CCol>
           <CCol xs={4}>
             <div className="text-end">
-              <Link to="/customerbilling">
-                <CButton
-                  color="info"
-                  size="sm"
-                  className="px-4 text-end text-white "
-                  type="button"
-                  style={{ marginTop: "-52px" }}
-                >
-                  Back
-                </CButton>
-              </Link>
+              {/* <Link to="/customerbilling"> */}
+              <CButton
+                color="info"
+                size="sm"
+                className="px-4 text-end text-white "
+                type="button"
+                style={{ marginTop: "-52px" }}
+                onClick={() => window.history.back()}
+              >
+                Back
+              </CButton>
+              {/* </Link> */}
             </div>
           </CCol>
         </CRow>
