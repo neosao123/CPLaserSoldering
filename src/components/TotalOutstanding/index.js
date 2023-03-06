@@ -274,7 +274,7 @@ export default function TotalOutstanding() {
       </CContainer>
 
       <CRow className="justify-content-center">
-        <CCol md={12} lg={12}>
+        <CCol md={12} lg={12} sm={12}>
           <CCard style={{ margin: "10px" }} className="mb-4">
             <CCardHeader>
               <strong>Total Outstanding</strong>
@@ -310,9 +310,9 @@ export default function TotalOutstanding() {
                     <option value="partial paid">Partially Paid</option>
                   </select>
                 </CCol>
-
-                <CCol md={1}>
-                  <br />
+               <br/>
+                <CCol md={12}>
+                  <div className='text-center mt-2'>
                   <CButton
                     color="success"
                     className="mt-1 "
@@ -320,22 +320,20 @@ export default function TotalOutstanding() {
                   >
                     Search
                   </CButton>
-                </CCol>
-                <CCol md={1}>
-                  <br />
                   <CButton
                     color="danger"
-                    className="mt-1"
+                    className="mt-1 ms-2"
                     onClick={handleClear}
                   >
                     Clear
                   </CButton>
+                  </div>
                 </CCol>
 
 
               </CRow>
               <DataTable
-                className="border border-dark"
+                className="border border-dark mt-3"
                 columns={columns}
                 data={data}
                 highlightOnHover

@@ -23,10 +23,12 @@ const ActionOutstanding = () => {
     let orderId = state?.orderId;
     let customerId = state?.customerId;
     let orderDate = state?.orderDate;
-    console.log(customerId)
+    const [balance, setBalance] = useState();
     const userData = useSelector((state) => state.userData);
     let userId = userData.userinfo.userId;
     const navigate = useNavigate();
+
+
     useEffect(() => {
         fetchBillView()
     }, [])
@@ -42,10 +44,10 @@ const ActionOutstanding = () => {
             console.log(res)
             if (res.status === 200) {
                 setBillData(res.data)
+                setBalance(res.data.remainingAmount)
             }
         })
     }
-
     const handleAddBill = (e) => {
         e.preventDefault();
         let validate = true;
@@ -58,8 +60,6 @@ const ActionOutstanding = () => {
             paymentMode: payMode,
             note: note ?? "",
         }
-        console.log(payLoadData);
-
         if (payLoadData.amount === undefined) {
             validate = false;
             setAmountErr("Please enter amount");
@@ -119,7 +119,6 @@ const ActionOutstanding = () => {
 
             }
         });
-
     }
 
     const columns = [
@@ -209,8 +208,33 @@ const ActionOutstanding = () => {
                         </CCardBody>
                     </CCard>
                 </CRow>
+                {console.log(billData?.remainingAmount)}
                 {
-                    !billData?.remainingAmount <= 0 ? (<>
+                    balance === "0.00" ? (<>
+                        <CRow className='mt-3'>
+                            <CCol md={12} sm={12}>
+                                <CCard>
+                                    <CCardHeader >
+                                        <strong>Bill History </strong>
+                                    </CCardHeader>
+                                    <CCard>
+                                        <CCardBody>
+                                            <DataTable
+                                                className="tableTopSpace  border border-table"
+                                                columns={columns}
+                                                responsive={true}
+                                                data={billData?.billPaidList}
+                                                // pagination
+                                                paginationComponentOptions={paginationComponentOptions}
+                                            // paginationServer
+                                            />
+                                        </CCardBody>
+                                    </CCard>
+
+                                </CCard>
+                            </CCol>
+                        </CRow>
+                    </>) : (<>
                         <CRow className="mt-3">
                             <CCol md={6} sm={12}>
                                 <CCard>
@@ -218,10 +242,7 @@ const ActionOutstanding = () => {
                                         <strong>Add Bill </strong>
                                     </CCardHeader>
                                     <form className='form p-4'>
-                                        {/* <div className="mt-3">
-                                    <lable> Customer Name </lable><br />
-                                    <input type="text" readOnly value={customerName} className="form-control" />
-                                </div> */}
+
                                         <div className="mt-3">
                                             <lable> Unpaid Bill Amount </lable><br />
                                             <input
@@ -231,8 +252,6 @@ const ActionOutstanding = () => {
                                                 placeholder="Remaining Amount"
                                                 className='form-control'
                                             />
-                                            {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
-
                                         </div>
                                         <div className="mt-3">
                                             <lable> Bill Date </lable><br />
@@ -242,7 +261,7 @@ const ActionOutstanding = () => {
                                                 onChange={(e) => { setBillDate(e.target.value); setDateErr("") }}
                                                 placeholder="Order Date"
                                             />
-                                            {/* <input type="text" readOnly value={orderDate} className="form-control" /> */}
+
                                             <span className='text-danger'>{billDateErr}</span>
                                         </div>
                                         <div className="mt-3">
@@ -265,7 +284,6 @@ const ActionOutstanding = () => {
                                                 <option value="cheque">Cheque</option>
                                             </select>
                                             <span className='text-danger'>{paymentModeErr} </span>
-
                                         </div>
                                         <div className="mt-3">
                                             <lable> Note </lable><br />
@@ -291,44 +309,20 @@ const ActionOutstanding = () => {
                                                 columns={columns}
                                                 responsive={true}
                                                 data={billData?.billPaidList}
-                                                pagination
+                                                // pagination
                                                 paginationComponentOptions={paginationComponentOptions}
-                                                paginationServer
+                                            // paginationServer
                                             />
                                         </CCardBody>
                                     </CCard>
-
                                 </CCard>
                             </CCol>
-                        </CRow>
-                    </>) : (<>
-                        <CRow>
-                            <CCol md={12} sm={12} className="mt-3">
-                                <CCard>
-                                    <CCardHeader >
-                                        <strong>Bill History </strong>
-                                    </CCardHeader>
-                                    <CCard>
-                                        <CCardBody>
-                                            <DataTable
-                                                className="tableTopSpace  border border-table"
-                                                columns={columns}
-                                                responsive={true}
-                                                data={billData?.billPaidList}
-                                                pagination
-                                                paginationComponentOptions={paginationComponentOptions}
-                                                paginationServer
-                                            />
-                                        </CCardBody>
-                                    </CCard>
-
-                                </CCard>
-                            </CCol>
-
                         </CRow>
                     </>)
-
                 }
+
+
+
 
 
             </CContainer>

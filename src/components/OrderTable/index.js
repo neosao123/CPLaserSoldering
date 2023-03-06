@@ -64,6 +64,7 @@ function OrderTable() {
   //for modal order add customer
   const [name, setName] = useState();
   const [contact, setContact] = useState();
+  const [customeNoteError, setcustomeNoteError] = useState();
   const [nameErr, setNameErr] = useState();
   const [contactErr, setContactErr] = useState();
 
@@ -261,6 +262,14 @@ function OrderTable() {
       });
     }
   };
+  const validationForm = (inputName, value) => {
+    if (inputName == "note" && value && value.length > 500) {
+      setcustomeNoteError(true)
+    } else {
+      setcustomeNoteError(false)
+    }
+  }
+
   const handleFileChangeImage = (e) => {
     if (e.target.files) {
       if (
@@ -293,12 +302,6 @@ function OrderTable() {
               });
               setFormFields(items);
             });
-
-            //       res.data.orderItems.forEach((itemm)=>{
-            //       setFormFields([
-            //         { item: itemm.res.data.orderItems.item, type: itemm.res.data.orderItems.type, charges: itemm.res.data.orderItems.charges  }
-            //       ]);
-            // })
             setNote(res.data.note);
             setDate(res.data.orderDate);
             console.log(res.data.orderDate)
@@ -410,7 +413,7 @@ function OrderTable() {
                   className="row g-3 needs-validation"
                   noValidate
                   validated={validated}
-                  // onSubmit={popswalfun}
+                  // onSubmit={popswalfun}x
                   onSubmit={handleSubmit}
                   method="post"
                 >
@@ -694,9 +697,20 @@ function OrderTable() {
                           name="note"
                           rows={3}
                           text=""
-                          onChange={(e) => setNote(e.target.value)}
+                          onChange={(e) => {
+                            setNote(e.target.value);
+                            validationForm(e.target.name, e.target.value)
+                          }
+                          }
                           value={note}
                         ></CFormTextarea>
+                        {customeNoteError === true ? (
+                          <>
+                            <CFormFeedback className="errorMessage-customer">
+                              Please Enter 500 Characters
+                            </CFormFeedback>
+                          </>
+                        ) : null}
                       </CCol>
                     </CForm>
                   </CRow>

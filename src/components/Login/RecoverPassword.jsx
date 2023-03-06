@@ -125,13 +125,13 @@ const RecoverPassword = () => {
                                         method="post"
                                         encType="multipart/form-data"
                                     >
-                                        <div className="row  rounded-4 mb-2 ">
+                                        {/* <div className="row  rounded-4 mb-2 ">
                                             <div className="col-3"></div>
                                             <div className="col-6 text-center bg-secondary rounded-4   p-2">
                                                 <img src={logo} alt="" style={{ height: "30px" }} /> &nbsp; <b className="text-white">Jwellery</b>
                                             </div>
                                             <div className="col-3"></div>
-                                        </div>
+                                        </div> */}
                                         <h4>Change password </h4>
 
 

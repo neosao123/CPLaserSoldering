@@ -33,14 +33,12 @@ const Profilepage = () => {
   const userData = useSelector((state) => state.userData);
   const [validated, setValidated] = useState(false);
   const [profileNamerError, setprofileNamerError] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [preview, setPreview] = useState();
   const [imageError, setImageError] = useState(false);
   const [profilemail, setprofilEmail] = useState(userData.userinfo.email);
   const [profilName, setprofilName] = useState(userData.userinfo.name);
   const [loading, setLoading] = useState(false);
-  const [profilPhoto, setprofilPhoto] = useState();
-
 
 
   let regx = /^[A-Za-z\s]*$/;
@@ -62,7 +60,27 @@ const Profilepage = () => {
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [image]);
+  
+  const handleFileChangeImage = (e) => {
+    if (image !== null) {
+      if (
+        e.target.files[0].type == "image/png" ||
+        e.target.files[0].type == "image/jpeg"
+      ) {
+        setImageError(false);
+
+      } else {
+        setImageError(true);
+      }
+      setImage(e.target.files[0]);
+    } else {
+      setImage("")
+    }
+  };
+
+
   const handleSubmit = (event) => {
+    setLoading(true)
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -71,18 +89,11 @@ const Profilepage = () => {
       event.preventDefault();
       event.stopPropagation()
 
-      let payloadData = {
-        userId: userData.userinfo.userId,
-        name: profilName,
-        email: profilemail,
-        profile_photo: profilPhoto,
-      };
-      setLoading(true)
       const formData = new FormData();
       formData.append("userId", userData.userinfo.userId,);
       formData.append("name", profilName);
       formData.append("email", profilemail);
-      formData.append("profile_photo", profilPhoto);
+      formData.append("profile_photo", image);
 
       profilePhotoApi(formData)
         .then(
@@ -93,7 +104,7 @@ const Profilepage = () => {
             if (res.status === 200) {
               swal("Profile ", "Profile Update success full", "success").then((ok) => {
                 if (ok) {
-                  window.location.reload();
+                  // window.location.reload();
                 }
               })
               setLoading(false)
@@ -108,13 +119,15 @@ const Profilepage = () => {
             setLoading(false)
           }
         )
-        .catch();
+        .catch(
+          setLoading(false)
+        );
 
 
       setValidated(true);
     }
   };
-
+  console.log(image)
   const validationForm = (inputName, value) => {
     if (inputName == "name" && value && regx.test(value) === false) {
       setprofileNamerError(true);
@@ -122,20 +135,7 @@ const Profilepage = () => {
       setprofileNamerError(false);
     }
   };
-  const handleFileChangeImage = (e) => {
-    if (e.target.files) {
-      if (
-        e.target.files[0].type == "image/png" ||
-        e.target.files[0].type == "image/jpeg"
-      ) {
-        setImageError(false);
 
-      } else {
-        setImageError(true);
-      }
-      setImage(e.target.files[0]);
-    }
-  };
 
   return (
     <>
@@ -213,10 +213,10 @@ const Profilepage = () => {
                       id="validationTextarea"
                       aria-label="file example"
                       // value={profilPhoto}
-                      required
+                      // required
                       onChange={handleFileChangeImage}
                     />
-                    <CFormFeedback invalid>Please upload image </CFormFeedback>
+                    {/* <CFormFeedback invalid>Please upload image </CFormFeedback> */}
                     {imageError === true ? (
                       <>
                         <CFormFeedback className="errorMessage">
@@ -236,9 +236,9 @@ const Profilepage = () => {
 
                     }}
                     value={profilName}
-                    required
+                  // required
                   />
-                  <CFormFeedback invalid>Please Enter Name.</CFormFeedback>
+                  {/* <CFormFeedback invalid>Please Enter Name.</CFormFeedback> */}
                   {profileNamerError === true ? (
                     <>
                       <CFormFeedback className="errorMessage-customer">
@@ -257,9 +257,9 @@ const Profilepage = () => {
                     onChange={(e) => {
                       setprofilEmail(e.target.value);
                     }}
-                    required
+                  // required
                   />
-                  <CFormFeedback invalid>Please Enter Email.</CFormFeedback>
+                  {/* <CFormFeedback invalid>Please Enter Email.</CFormFeedback> */}
 
                   <CRow>
                     <CCol xs={6}>

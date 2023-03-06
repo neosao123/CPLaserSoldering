@@ -75,7 +75,6 @@ export default function FormComponent() {
     },
   ]
   useEffect(() => {
-    // console.log("usEffect",custmerList.length)
     if (custmerList.length == 0) {
       getcustomer(0);
     }
@@ -86,8 +85,6 @@ export default function FormComponent() {
       await customerListApi(userData.userinfo.userId, page ? page : 0)
         .then(
           async (res) => {
-            // console.log(" success");
-            // console.log("res", res);
             setCustomerList(res.data);
             setListLoading(false)
             setCustomerTotalRecord(res.totalRecords);
@@ -105,6 +102,8 @@ export default function FormComponent() {
     var offset = (currentPage - 1) * perPage;
     getcustomer(offset);
   };
+
+
   const set1 = () => {
     setname("");
     setcontact("");
@@ -170,7 +169,7 @@ export default function FormComponent() {
                   swal("Customer", res.message, "error")
                 } else {
                   setValidated(false)
-                  set1(); 
+                  set1();
                   swal("Customer", res.message, "success")
                   getcustomer(0);
                 }
@@ -237,37 +236,37 @@ export default function FormComponent() {
       customerId: deleteCustomerId
     };
     swal({
-      title: "Are you sure?",
-      text: "Are you sure to delete Order?",
+      title:"Are you sure to delete Order?",
+      // text: "Are you sure to delete Order?",
       icon: "warning",
       dangerMode: true,
       buttons: ["Cancel", "Ok"],
     }).then((willDelete) => {
       if (willDelete) {
-         deleteCustomerByIdApi(payloadData)
-      .then(
-        async (res) => {
-          if (res.status === 200) {
-            swal("Success", res.message, "success").then((ok) => {
-              if (ok) {
-                let custmerListt = custmerList.filter((e) => {
-                  if (e.customerId != deleteCustomerId) {
-                    return e
+        deleteCustomerByIdApi(payloadData)
+          .then(
+            async (res) => {
+              if (res.status === 200) {
+                swal("Success", res.message, "success").then((ok) => {
+                  if (ok) {
+                    let custmerListt = custmerList.filter((e) => {
+                      if (e.customerId != deleteCustomerId) {
+                        return e
+                      }
+                    });
+                    //  console.log("custmerListt",custmerListt)
+                    setCustomerList([...custmerListt])
+                    setCustomerTotalRecord(custmerTotalRecord - 1)
                   }
                 });
-                //  console.log("custmerListt",custmerListt)
-                setCustomerList([...custmerListt])
-                setCustomerTotalRecord(custmerTotalRecord - 1)
               }
             });
-          }
-        });
       }
-        },
-        (err) => {
+    },
+      (err) => {
 
-        }
-      )
+      }
+    )
       .catch();
   }
 
@@ -322,11 +321,11 @@ export default function FormComponent() {
                     }}
                     value={name}
                     required />
-                  <CFormFeedback invalid>Please Enter Name.</CFormFeedback>
+                  <CFormFeedback invalid> Please Enter Valid Name.</CFormFeedback>
                   {customeNamerError === true ? (
                     <>
                       <CFormFeedback className="errorMessage-customer">
-                        Please Enter Name.
+                        Please Enter Valid Name.
                       </CFormFeedback>
                     </>
                   ) : null}
@@ -347,7 +346,7 @@ export default function FormComponent() {
                   {customerPhoneError === true ? (
                     <>
                       <CFormFeedback className="errorMessage-customer">
-                        Please Enter 10 Number.
+                      Enter 10 Digit Number.
                       </CFormFeedback>
                     </>
                   ) : null}

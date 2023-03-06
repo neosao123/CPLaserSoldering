@@ -130,28 +130,25 @@ export default function Customerbilling() {
     )
       .then(
         async (res) => {
-          console.log(" success");
-          console.log("res", res);
           setorderList(res.data);
           setsmsSendFlag(res.data.smsSendFlag)
           setData(res.data);
           setListLoading(false);
           setorderTotalRecord(res.totalRecords);
 
-          // getorderlist(0);
         },
         (err) => {
-          setListLoading(false);
+          setListLoading(false)
         }
       )
-      .catch();
+      .catch(
+        setListLoading(false)
+      );
   };
 
   const handlePageChange = (page) => {
-    // console.log("page",page)
     let currentPage = page;
     var offset = (currentPage - 1) * perPage;
-    // console.log("offset",offset)
     getorderlist(offset);
   };
 

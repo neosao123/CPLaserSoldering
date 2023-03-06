@@ -47,8 +47,6 @@ export default function TotalOutstanding() {
     const [selectedCustomer, setSelectedCustomer] = useState("");
     let { customerIdd } = useParams();
     let UserId = userData.userinfo.userId
-
-
     const columns = [
         {
             name: "Sr. No.",
@@ -67,57 +65,53 @@ export default function TotalOutstanding() {
             selector: (row) => row.paymentMode,
         },
     ];
-    function handlePerRowsChange(page) {
+
+    const handlePerRowChange = (page) => {
         if (page === undefined) {
             page = 0;
         }
-        var ofs = (page - 1) * perPage;
-        outstandingHistory(customerIdd, ofs, UserId).then(
-            (res) => {
-                if (res.status === 200) {
-                    setData(res?.data.billPaidList);
-                    setTotalRows(res.totalBills);
-                    setSelectedCustomer(res.data);
-                    setListLoading(false);
-                }
-            },
-            (err) => {
-                console.log(err);
+        var ofs = (page - 1) * 10;
+        setListLoading(true)
+        outstandingHistory(customerIdd, ofs, UserId).then((res) => {
+            setListLoading(false)
+            if (res.status === 200) {
+                console.log(res)
+                setData(res.data.billPaidList);
+                setSelectedCustomer(res.data);
+                setTotalRows(res.data.totalBills)
+            } else {
+                setListLoading(false)
             }
-        );
+        }).catch(
+            setListLoading(false)
+        )
     }
-
-    function handlePageChange(page) {
-        setListLoading(true);
-        var offset = (page - 1) * perPage;
-        outstandingHistory(customerIdd, offset, UserId).then(
-            (res) => {
-                if (res.status === 200) {
-                    console.log(res);
-                    setData(res.data.billPaidList);
-                    setTotalRows(res.totalBills);
-                    setListLoading(false);
-                    setSelectedCustomer(res.data);
-                }
-            },
-            (err) => {
-                console.log(err);
-                setListLoading(false);
+    const handlePageChange = (page) => {
+        if (page === undefined) {
+            page = 0;
+        }
+        var ofs = (page - 1) * 10;
+        outstandingHistory(customerIdd, ofs, UserId).then((res) => {
+            setListLoading(false)
+            if (res.status === 200) {
+                setData(res.data.billPaidList);
+                setSelectedCustomer(res.data);
+                setTotalRows(res.data.totalBills)
+            } else {
+                setListLoading(false)
             }
-        );
+        }).catch(
+            setListLoading(false)
+        )
     }
-
     useEffect(() => {
-        handlePageChange(0);
-        handlePerRowsChange(0)
-    }, []);
+        handlePerRowChange(0)
+    }, [])
 
     const paginationComponentOptions = {
         rowsPerPageText: "",
         noRowsPerPage: true,
     };
-
-
 
     return (
         <div>
@@ -159,13 +153,13 @@ export default function TotalOutstanding() {
                                 <b>Customer Phone</b>  :  {selectedCustomer?.customerPhone}
                             </CCol>
                             <CCol md={4} sm={12}>
-                                <b>Balance</b>  :  {selectedCustomer?.remainingAmount}
-                            </CCol>
-                            <CCol md={4} sm={12} >
-                                <b>Total Charges</b>  :  {selectedCustomer?.totalCharges}
+                                <b>Outstanding</b>  :  {selectedCustomer?.outstanding}
                             </CCol>
                             <CCol md={4} sm={12}>
                                 <b>Total Paid</b>  :  {selectedCustomer?.paid}
+                            </CCol>
+                            <CCol md={4} sm={12}>
+                                <b>Balance</b>  :  {selectedCustomer?.balance}
                             </CCol>
                         </CRow>
                         <CCardBody>
@@ -181,65 +175,6 @@ export default function TotalOutstanding() {
                             <strong>View</strong>
                         </CCardHeader>
                         <CCardBody>
-                            {/* <CRow className="">
-                <CCol md={12}>
-                  <CFormLabel>
-                    <b>Filter:</b>
-                  </CFormLabel>
-                </CCol>
-​
-                <CCol md={3}>
-                  <CFormLabel>Customer Name</CFormLabel>
-                  <Select
-                    options={customerList}
-                    placeholder={
-                      <div className="select-placeholder-text">
-                        Select Customer
-                      </div>
-                    }
-                    className="text-start mb-3"
-                    value={customerList?.find(
-                      (obj) => obj.value === selectedCustomer
-                    )}
-                    onChange={handleCustomer}
-                  />
-                </CCol>
-​
-                <CCol md={3}>
-                  <CFormLabel>Payment</CFormLabel>
-                  <select
-                    name="cars"
-                    id="cars"
-                    className="form-select"
-                    onChange={handlePayment}
-                  >
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
-                    <option value="partiallypaid">Partially Paid</option>
-                  </select>
-                </CCol>
-​
-                <CCol md={1}>
-                  <br />
-                  <CButton
-                    color="success"
-                    className="mt-1 "
-                    // onClick={handleSearch}
-                  >
-                    Search
-                  </CButton>
-                </CCol>
-                <CCol md={1}>
-                  <br />
-                  <CButton
-                    color="danger"
-                    className="mt-1"
-                    onClick={handleClear}
-                  >
-                    Clear
-                  </CButton>
-                </CCol>
-              </CRow> */}
                             <DataTable
                                 className="tableTopSpace  border border-table"
                                 columns={columns}
